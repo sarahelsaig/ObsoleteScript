@@ -59,12 +59,17 @@ public class Program
 }
 """;
 
+        await RunAsync(testCode, fixedCode, script);
+    }
+
+    private static Task RunAsync(string testCode, string fixedCode, string script)
+    {
         var test = new CSharpCodeFixTest<EmptyDiagnosticAnalyzer, ObsoleteScriptCodeFixProvider, DefaultVerifier>
         {
             TestCode = CodeToPrepend + testCode.Replace("SCRIPT-HERE", script),
             FixedCode = CodeToPrepend + fixedCode.Replace("SCRIPT-HERE", script),
         };
 
-        await test.RunAsync();
+        return test.RunAsync();
     }
 }
