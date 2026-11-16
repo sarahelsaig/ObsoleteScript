@@ -57,6 +57,8 @@ TestResult.xml
 nunit-*.xml
 
 # IDE directories
-/.idea/
-/.vs/
-/.vscode/
+.idea/
+.vs/
+.vscode/
+.editorconfig
+*.DotSettings.user

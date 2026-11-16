@@ -5,4 +5,5 @@
     <File Path="README.md" />
   </Folder>
   <Project Path="DerelictCore.ObsoleteScript/DerelictCore.ObsoleteScript.csproj" />
+  <Project Path="TestProject1/TestProject1.csproj" />
 </Solution>
