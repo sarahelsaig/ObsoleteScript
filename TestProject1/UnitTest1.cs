@@ -13,6 +13,8 @@ using System;
 public sealed class ObsoleteScriptAttribute : Attribute
 {
     public string Script { get; set; }
+
+    public ObsoleteScriptAttribute(string script) => Script = script;
 }
 
 
@@ -21,13 +23,13 @@ public sealed class ObsoleteScriptAttribute : Attribute
     [Fact]
     public async Task Test1()
     {
-        var script = "";
+        var script = "{nameof(OldMethod)} --> {nameof(NewMethod)}";
         
         var testCode = """
 public class OldService
 {
     [Obsolete]
-    [ObsoleteScript(Script = "SCRIPT-HERE")]
+    [ObsoleteScript($"SCRIPT-HERE")]
     public void OldMethod() { }
     public void NewMethod() { }
 }
@@ -45,7 +47,7 @@ public class Program
 public class OldService
 {
     [Obsolete]
-    [ObsoleteScript(Script = "SCRIPT-HERE")]
+    [ObsoleteScript($"SCRIPT-HERE")]
     public void OldMethod() { }
     public void NewMethod() { }
 }

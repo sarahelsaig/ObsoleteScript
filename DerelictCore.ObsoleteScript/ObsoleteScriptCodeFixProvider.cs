@@ -1,3 +1,4 @@
+using DerelictCore.ObsoleteScript.Constants;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CodeActions;
 using Microsoft.CodeAnalysis.CodeFixes;
@@ -34,26 +35,33 @@ namespace DerelictCore.ObsoleteScript
             if (context.Diagnostics.FirstOrDefault() is { Location.SourceSpan: { } span } diagnostic &&
                 await context.Document.GetSyntaxRootAsync(context.CancellationToken).ConfigureAwait(false) is { } root &&
                 root.FindNode(span) is InvocationExpressionSyntax node &&
-                await IsApplicableAsync(context, node).ConfigureAwait(false))
+                await GetScript(context, node).ConfigureAwait(false) is { Length: >0 } script)
             {
                 context.RegisterCodeFix(
                     CodeAction.Create(
                         title: "Execute ObsoleteScript to resolve",
-                        token => CreateChangedDocument(context, root, diagnostic, node, token),
+                        token => CreateChangedDocument(context, root, diagnostic, node, script, token),
                         equivalenceKey: nameof(ObsoleteScriptCodeFixProvider)),
                     diagnostic);
             }
         }
 
-        private async Task<bool> IsApplicableAsync(CodeFixContext context, SyntaxNode node)
+        private async Task<string?> GetScript(CodeFixContext context, SyntaxNode node)
         {
-            if (await context.Document.GetSemanticModelAsync(context.CancellationToken).ConfigureAwait(false) is not { } semanticModel)
+            var token = context.CancellationToken;
+            if (await context.Document.GetSemanticModelAsync(token).ConfigureAwait(false) is not { } semanticModel)
             {
-                return false;
+                return null;
             }
 
-            var symbol = semanticModel.GetSymbolInfo(node, context.CancellationToken).Symbol;
-            return symbol?.GetAttributes().Any(a => a.AttributeClass?.Name == nameof(ObsoleteScriptAttribute)) == true;
+            var symbol = semanticModel.GetSymbolInfo(node, token).Symbol;
+            return symbol?
+                .GetAttributes()
+                .First(attribute => attribute.AttributeClass?.Name == nameof(ObsoleteScriptAttribute))
+                .ConstructorArguments
+                .FirstOrDefault()
+                .Value?
+                .ToString();
         }
 
         private async Task<Document> CreateChangedDocument(
@@ -61,16 +69,23 @@ namespace DerelictCore.ObsoleteScript
             SyntaxNode root,
             Diagnostic diagnostic,
             InvocationExpressionSyntax node,
+            string script,
             CancellationToken token)
         {
-            // if (node is IdentifierNameSyntax identifier)
-            // {
-            //     var newIdentifier = SyntaxFactory.IdentifierName("NewReplacementMethod")
-            //         .WithTriviaFrom(identifier); // Preserves spaces and comments
-            // 
-            //     var newRoot = root.ReplaceNode(identifier, newIdentifier);
-            //     return context.Document.WithSyntaxRoot(newRoot);
-            // }
+            if (script.Contains(ScriptElements.SubstitutionSeparator))
+            {
+                var parts = script.Split([ScriptElements.SubstitutionSeparator], 2, StringSplitOptions.None);
+                var from = parts[0].Trim();
+                var to = parts[1].Trim();
+
+                var identifier = (IdentifierNameSyntax)node.DescendantNodes()
+                    .FirstOrDefault(node => (node as IdentifierNameSyntax)?.Identifier.ValueText == from);
+                var newIdentifier = SyntaxFactory.IdentifierName(to)
+                    .WithTriviaFrom(identifier); // Preserves spaces and comments
+
+                var newRoot = root.ReplaceNode(identifier, newIdentifier);
+                return context.Document.WithSyntaxRoot(newRoot);
+            }
 
             return context.Document;
         }

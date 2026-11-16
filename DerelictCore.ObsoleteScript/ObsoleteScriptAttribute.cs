@@ -6,5 +6,7 @@ namespace DerelictCore.ObsoleteScript
     public sealed class ObsoleteScriptAttribute : Attribute
     {
         public string Script { get; set; }
+
+        public ObsoleteScriptAttribute(string script) => Script = script;
     }
 }
