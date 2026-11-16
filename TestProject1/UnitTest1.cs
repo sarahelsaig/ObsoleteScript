@@ -20,11 +20,11 @@ public sealed class ObsoleteScriptAttribute : Attribute
 
 """;
     
-    [Fact]
-    public async Task Test1()
+    [Theory]
+    [InlineData("--> {nameof(NewMethod)}")]
+    [InlineData("{nameof(OldMethod)} --> {nameof(NewMethod)}")]
+    public async Task Test1(string script)
     {
-        var script = "{nameof(OldMethod)} --> {nameof(NewMethod)}";
-        
         var testCode = """
 public class OldService
 {

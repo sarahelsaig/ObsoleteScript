@@ -35,40 +35,42 @@ namespace DerelictCore.ObsoleteScript
             if (context.Diagnostics.FirstOrDefault() is { Location.SourceSpan: { } span } diagnostic &&
                 await context.Document.GetSyntaxRootAsync(context.CancellationToken).ConfigureAwait(false) is { } root &&
                 root.FindNode(span) is InvocationExpressionSyntax node &&
-                await GetScript(context, node).ConfigureAwait(false) is { Length: >0 } script)
+                await GetNameAndScriptAsync(context, node).ConfigureAwait(false) is ({ Length: >0 } name, { Length: >0 } script))
             {
                 context.RegisterCodeFix(
                     CodeAction.Create(
                         title: "Execute ObsoleteScript to resolve",
-                        token => CreateChangedDocument(context, root, diagnostic, node, script, token),
+                        token => CreateChangedDocumentAsync(context, root, diagnostic, node, name, script, token),
                         equivalenceKey: nameof(ObsoleteScriptCodeFixProvider)),
                     diagnostic);
             }
         }
 
-        private async Task<string?> GetScript(CodeFixContext context, SyntaxNode node)
+        private async Task<(string? Name, string? Script)> GetNameAndScriptAsync(CodeFixContext context, SyntaxNode node)
         {
             var token = context.CancellationToken;
             if (await context.Document.GetSemanticModelAsync(token).ConfigureAwait(false) is not { } semanticModel)
             {
-                return null;
+                return (null, null);
             }
 
             var symbol = semanticModel.GetSymbolInfo(node, token).Symbol;
-            return symbol?
+            var script = symbol?
                 .GetAttributes()
                 .First(attribute => attribute.AttributeClass?.Name == nameof(ObsoleteScriptAttribute))
                 .ConstructorArguments
                 .FirstOrDefault()
                 .Value?
                 .ToString();
+            return (symbol?.Name, script);
         }
 
-        private async Task<Document> CreateChangedDocument(
+        private async Task<Document> CreateChangedDocumentAsync(
             CodeFixContext context,
             SyntaxNode root,
             Diagnostic diagnostic,
             InvocationExpressionSyntax node,
+            string name,
             string script,
             CancellationToken token)
         {
@@ -77,6 +79,8 @@ namespace DerelictCore.ObsoleteScript
                 var parts = script.Split([ScriptElements.SubstitutionSeparator], 2, StringSplitOptions.None);
                 var from = parts[0].Trim();
                 var to = parts[1].Trim();
+
+                if (from.Length == 0) from = name;
 
                 var identifier = (IdentifierNameSyntax)node.DescendantNodes()
                     .FirstOrDefault(node => (node as IdentifierNameSyntax)?.Identifier.ValueText == from);
