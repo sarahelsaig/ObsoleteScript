@@ -1,4 +1,6 @@
-﻿namespace TestProject1;
+﻿using DerelictCore.ObsoleteScript.Constants;
+
+namespace TestProject1;
 
 public class UnitTest1 : TestBase
 {
@@ -15,5 +17,5 @@ public class UnitTest1 : TestBase
     public Task OverloadSubstitution(string variant) =>
         RunAsync(
             [nameof(OverloadSubstitution), variant],
-            "overloads: {`1`: `{0}NewMethod1({1})`, `2`: `{0}NewMethod1({1}).NewMethod2({2})`}");
+            ScriptElements.OverloadsPrefix + "{`1`: `{0}NewMethod1({1})`, `2`: `{0}NewMethod1({1}).NewMethod2({2})`}");
 }

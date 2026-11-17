@@ -95,9 +95,9 @@ public class ObsoleteScriptCodeFixProvider : CodeFixProvider
             return ReplaceNode(identifier, newIdentifier);
         }
 
-        if (script.StartsWith("overloads:", StringComparison.OrdinalIgnoreCase))
+        if (script.StartsWith(ScriptElements.OverloadsPrefix, StringComparison.OrdinalIgnoreCase))
         {
-            var json = script.Substring("overloads:".Length).Replace('`', '"');
+            var json = script.Substring(ScriptElements.OverloadsPrefix.Length).Replace('`', '"');
             var dictionary = JsonSerializer.Deserialize<Dictionary<string, string>>(json) ?? [];
             var argumentsList = node.DescendantNodes().OfType<ArgumentListSyntax>().First().ChildNodes().ToList();
 
