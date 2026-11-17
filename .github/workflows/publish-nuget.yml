@@ -12,4 +12,4 @@ jobs:
     secrets:
       API_KEY: ${{ secrets.DEFAULT_NUGET_PUBLISH_API_KEY }}
     with:
-      dotnet-pack-include-symbols: 'false'
+      dotnet-pack-ignore-warning: NU5125
