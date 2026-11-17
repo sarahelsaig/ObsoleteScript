@@ -11,7 +11,6 @@ using System.Composition;
 using System.Globalization;
 using System.Linq;
 using System.Text.Json;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace DerelictCore.ObsoleteScript;
@@ -38,12 +37,12 @@ public class ObsoleteScriptCodeFixProvider : CodeFixProvider
         if (context.Diagnostics.FirstOrDefault() is { Location.SourceSpan: { } span } diagnostic &&
             await context.Document.GetSyntaxRootAsync(context.CancellationToken).ConfigureAwait(false) is { } root &&
             root.FindNode(span) is InvocationExpressionSyntax node &&
-            await GetNameAndScriptAsync(context, node).ConfigureAwait(false) is ({ Length: >0 } name, { Length: >0 } script))
+            await GetNameAndScriptAsync(context, node).ConfigureAwait(false) is ({ Length: > 0 } name, { Length: > 0 } script))
         {
             context.RegisterCodeFix(
                 CodeAction.Create(
                     title: "Execute ObsoleteScript to resolve",
-                    token => CreateChangedDocumentAsync(context, root, diagnostic, node, name, script, token),
+                    token => CreateChangedDocumentAsync(context, root, node, name, script),
                     equivalenceKey: nameof(ObsoleteScriptCodeFixProvider)),
                 diagnostic);
         }
@@ -68,23 +67,19 @@ public class ObsoleteScriptCodeFixProvider : CodeFixProvider
         return (symbol?.Name, script);
     }
 
-    private async Task<Document> CreateChangedDocumentAsync(
+    // ReSharper disable once AsyncMethodWithoutAwait -- future proofing.
+    private static async Task<Document> CreateChangedDocumentAsync(
         CodeFixContext context,
         SyntaxNode root,
-        Diagnostic diagnostic,
         InvocationExpressionSyntax node,
         string name,
-        string script,
-        CancellationToken token)
+        string script)
     {
         Document ReplaceNode(SyntaxNode from, SyntaxNode to)
         {
             var newRoot = root.ReplaceNode(from, to);
             return context.Document.WithSyntaxRoot(newRoot);
         }
-
-        var identifier = GetIdentifier(node, name);
-        var allNodes = node.DescendantNodes().ToList();
 
         if (script.Contains(ScriptElements.SubstitutionSeparator))
         {
@@ -94,7 +89,7 @@ public class ObsoleteScriptCodeFixProvider : CodeFixProvider
 
             if (from.Length == 0) from = name;
 
-            identifier = GetIdentifier(node, from);
+            var identifier = GetIdentifier(node, from);
             var newIdentifier = SyntaxFactory.IdentifierName(to)
                 .WithTriviaFrom(identifier); // Preserves spaces and comments
             return ReplaceNode(identifier, newIdentifier);
@@ -118,7 +113,7 @@ public class ObsoleteScriptCodeFixProvider : CodeFixProvider
         return context.Document;
     }
 
-    private IdentifierNameSyntax GetIdentifier(InvocationExpressionSyntax invocation, string name) =>
+    private static IdentifierNameSyntax GetIdentifier(InvocationExpressionSyntax invocation, string name) =>
         invocation
             .DescendantNodes()
             .OfType<IdentifierNameSyntax>()
