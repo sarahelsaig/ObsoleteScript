@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
+    <metadata>
+        <id>DerelictCore.ObsoleteScript</id>
+        <version>$version$</version>
+        <title>DerelictCore.ObsoleteScript</title>
+        <authors>El-Saig Sára</authors>
+        <license type="expression">MIT</license>
+        <projectUrl>https://github.com/sarahelsaig/ObsoleteScript</projectUrl>
+        <description>Code fix provider for Obsolete methods.</description>
+        <copyright>Copyright © 2026 El-Saig Sára</copyright>
+        <tags>CodeFix CodeFixProvider Obsolete</tags>
+        <repository type="git" url="https://github.com/sarahelsaig/ObsoleteScript" commit="2368412a075318469dd58ba95ff75eb599efa001" />
+        <dependencies>
+          <group targetFramework=".NETStandard2.0">
+            <dependency id="DerelictCore.ObsoleteScript.Abstractions" version="$version$" exclude="Build,Analyzers" />
+            <dependency id="Microsoft.CodeAnalysis.CSharp.Workspaces" version="5.12.0" exclude="Build,Analyzers" />
+            <dependency id="System.Text.Json" version="11.0.0" exclude="Build,Analyzers" />
+          </group>
+        </dependencies>
+        <developmentDependency>true</developmentDependency>
+    </metadata>
+    <files>
+      <file src="bin\$Configuration$\netstandard2.0\DerelictCore.ObsoleteScript.dll" target="analyzers\dotnet\cs\" />
+    </files>
+</package>

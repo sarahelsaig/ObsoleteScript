@@ -11,10 +11,10 @@
     <Authors>El-Saig Sára</Authors>
     <Copyright>Copyright © 2026 El-Saig Sára</Copyright>
     <Description>Code fix provider for Obsolete methods.</Description>
-    <PackageTags>Code Fix;CodeFixProvider;Obsolete</PackageTags>
+    <PackageTags>CodeFix;CodeFixProvider;Obsolete</PackageTags>
     <RepositoryUrl>https://github.com/sarahelsaig/ObsoleteScript</RepositoryUrl>
     <PackageProjectUrl>https://github.com/sarahelsaig/ObsoleteScript</PackageProjectUrl>
-    <PackageLicenseFile>License.md</PackageLicenseFile>
+    <PackageLicenseUrl>https://github.com/sarahelsaig/ObsoleteScript/blob/main/LICENSE</PackageLicenseUrl>
   </PropertyGroup>
   
   <ItemGroup>
@@ -34,37 +34,5 @@
   <ItemGroup>
     <ProjectReference Include="..\DerelictCore.ObsoleteScript.Abstractions\DerelictCore.ObsoleteScript.Abstractions.csproj" />
   </ItemGroup>
-
-  <Target Name="AddNuGetDlls" BeforeTargets="_GetPackageFiles">
-    <!-- Merge the collection of PackageReference and Assemblies using the NuGetPackageId key.
-         This produces a new list containing the DLL path and the "IncludeInPackage" metadata-->
-    <JoinItems Left="@(ResolvedCompileFileDefinitions)" LeftKey="NuGetPackageId" LeftMetadata="*"
-               Right="@(PackageReference)" RightKey="" RightMetadata="*"
-               ItemSpecToUse="Left">
-      <Output TaskParameter="JoinResult" ItemName="_PackagesToPack" />
-    </JoinItems>
-
-    <ItemGroup>
-      <!-- Remove NETStandard DLLs -->
-      <_PackagesToPack Remove="@(_PackagesToPack)" Condition="%(NuGetPackageId) == 'NETStandard.Library'" />
-      <_PackagesToPack Remove="@(_PackagesToPack)" Condition="%(_PackagesToPack.IncludeInPackage) != 'true'" />
-    </ItemGroup>
-
-    <Message Importance="High" Text="Adding DLLs from the following packages: @(_PackagesToPack->'%(NuGetPackageId)')" />
-
-    <ItemGroup>
-      <!-- Update the collection of items to pack with the DLLs from the NuGet packages -->
-      <None Include="@(_PackagesToPack)"
-            Pack="true"
-            PackagePath="analyzers/dotnet/cs"
-            Visible="false" />
-
-      <!-- Add the DLL produced by the current project to the NuGet package -->
-      <None Include="$(OutputPath)\$(AssemblyName).dll"
-            Pack="true"
-            PackagePath="analyzers/dotnet/cs"
-            Visible="false" />
-    </ItemGroup>
-  </Target>
 
 </Project>

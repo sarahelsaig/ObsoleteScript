@@ -12,10 +12,10 @@
     <Authors>El-Saig Sára</Authors>
     <Copyright>Copyright © 2026 El-Saig Sára</Copyright>
     <Description>The basic features required to support ObsoleteScript in a library.</Description>
-    <PackageTags>Code Fix;CodeFixProvider;Obsolete</PackageTags>
+    <PackageTags>CodeFix;CodeFixProvider;Obsolete</PackageTags>
     <RepositoryUrl>https://github.com/sarahelsaig/ObsoleteScript</RepositoryUrl>
     <PackageProjectUrl>https://github.com/sarahelsaig/ObsoleteScript/tree/main/DerelictCore.ObsoleteScript.Abstractions</PackageProjectUrl>
-    <PackageLicenseFile>License.md</PackageLicenseFile>
+    <PackageLicenseUrl>https://github.com/sarahelsaig/ObsoleteScript/blob/main/LICENSE</PackageLicenseUrl>
   </PropertyGroup>
 
   <ItemGroup>
