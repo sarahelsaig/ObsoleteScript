@@ -5,6 +5,7 @@
     <File Path="LICENSE" />
     <File Path="README.md" />
   </Folder>
+  <Project Path="DerelictCore.ObsoleteScript.Abstractions/DerelictCore.ObsoleteScript.Abstractions.csproj" />
+  <Project Path="DerelictCore.ObsoleteScript.Tests\DerelictCore.ObsoleteScript.Tests.csproj" />
   <Project Path="DerelictCore.ObsoleteScript/DerelictCore.ObsoleteScript.csproj" />
-  <Project Path="TestProject1/TestProject1.csproj" />
 </Solution>

@@ -6,6 +6,7 @@
     <Nullable>enable</Nullable>
     <IsPackable>false</IsPackable>
     <NuGetAuditMode>direct</NuGetAuditMode>
+    <RootNamespace>TestProject1</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
@@ -14,21 +15,6 @@
   
   <ItemGroup>
     <None Include="Samples\**\*.csx" CopyToOutputDirectory="PreserveNewest" />
-    <None Update="Samples\OverloadSubstitution.Input.csx">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Samples\BasicSubstitution.Base.csx">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Samples\OverloadSubstitution.A.Base.csx">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Samples\OverloadSubstitution.3.Input.csx">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Samples\OverloadSubstitution.3.Expected.csx">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
   </ItemGroup>
 
   <ItemGroup>
