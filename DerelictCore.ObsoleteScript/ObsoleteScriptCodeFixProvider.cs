@@ -23,7 +23,8 @@ namespace DerelictCore.ObsoleteScript;
 [ExportCodeFixProvider(LanguageNames.CSharp, Name = nameof(ObsoleteScriptCodeFixProvider))]
 public class ObsoleteScriptCodeFixProvider : CodeFixProvider
 {
-    private static readonly ImmutableArray<string> _fixableDiagnosticIds = ["CS0612", "CS0618"];
+    private static readonly ImmutableArray<string> _fixableDiagnosticIds =
+        ImmutableArray.Create<string>("CS0612", "CS0618");
 
     /// <inheritdoc/>
     public override ImmutableArray<string> FixableDiagnosticIds => _fixableDiagnosticIds;
@@ -34,7 +35,9 @@ public class ObsoleteScriptCodeFixProvider : CodeFixProvider
     /// <inheritdoc/>
     public override async Task RegisterCodeFixesAsync(CodeFixContext context)
     {
-        if (context.Diagnostics.FirstOrDefault() is { Location.SourceSpan: { } span } diagnostic &&
+        if (context.Diagnostics.FirstOrDefault() is not { } diagnostic) return;
+
+        if (diagnostic.Location.SourceSpan is { } span &&
             await context.Document.GetSyntaxRootAsync(context.CancellationToken).ConfigureAwait(false) is { } root &&
             root.FindNode(span) is InvocationExpressionSyntax node &&
             await GetNameAndScriptAsync(context, node).ConfigureAwait(false) is ({ Length: > 0 } name, { Length: > 0 } script))
@@ -43,6 +46,16 @@ public class ObsoleteScriptCodeFixProvider : CodeFixProvider
                 CodeAction.Create(
                     title: "Execute ObsoleteScript to resolve",
                     token => CreateChangedDocumentAsync(context, root, node, name, script),
+                    equivalenceKey: nameof(ObsoleteScriptCodeFixProvider)),
+                diagnostic);
+        }
+        else
+        {
+            // Use this to verify that the code fix works.
+            context.RegisterCodeFix(
+                CodeAction.Create(
+                    title: "ObsoleteScript can't help you.",
+                    _ => Task.FromResult(context.Document),
                     equivalenceKey: nameof(ObsoleteScriptCodeFixProvider)),
                 diagnostic);
         }

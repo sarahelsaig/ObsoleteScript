@@ -5,8 +5,8 @@ namespace TestProject1;
 public class UnitTest1 : TestBase
 {
     [Theory]
-    [InlineData("--> {nameof(NewMethod)}")]
-    [InlineData("{nameof(OldMethod)} --> {nameof(NewMethod)}")]
+    [InlineData("--> NewMethod")]
+    [InlineData("OldMethod --> NewMethod")]
     public Task BasicSubstitution(string script) =>
         RunAsync([nameof(BasicSubstitution)], script);
 
