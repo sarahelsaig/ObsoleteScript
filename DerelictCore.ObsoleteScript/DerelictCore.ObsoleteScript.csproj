@@ -6,6 +6,22 @@
     <IsPackable>true</IsPackable>
   </PropertyGroup>
 
+  <PropertyGroup>
+    <Title>DerelictCore.ObsoleteScript</Title>
+    <Authors>El-Saig Sára</Authors>
+    <Copyright>Copyright © 2026 El-Saig Sára</Copyright>
+    <Description>Code fix provider for Obsolete methods.</Description>
+    <PackageTags>Code Fix;CodeFixProvider;Obsolete</PackageTags>
+    <RepositoryUrl>https://github.com/sarahelsaig/ObsoleteScript</RepositoryUrl>
+    <PackageProjectUrl>https://github.com/sarahelsaig/ObsoleteScript</PackageProjectUrl>
+    <PackageLicenseFile>License.md</PackageLicenseFile>
+  </PropertyGroup>
+  
+  <ItemGroup>
+    <None Include="..\LICENSE" Link="License.md" />
+    <None Include="..\README.md" Link="Readme.md" />
+  </ItemGroup>
+
   <ItemGroup>
     <PackageReference Include="Lombiq.Analyzers" Version="7.0.1-alpha.2.osoe-1333">
       <PrivateAssets>all</PrivateAssets>

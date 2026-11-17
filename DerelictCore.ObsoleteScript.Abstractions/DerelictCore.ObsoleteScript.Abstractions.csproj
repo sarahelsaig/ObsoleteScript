@@ -7,6 +7,22 @@
     <RootNamespace>DerelictCore.ObsoleteScript</RootNamespace>
   </PropertyGroup>
 
+  <PropertyGroup>
+    <Title>DerelictCore.ObsoleteScript.Abstractions</Title>
+    <Authors>El-Saig Sára</Authors>
+    <Copyright>Copyright © 2026 El-Saig Sára</Copyright>
+    <Description>The basic features required to support ObsoleteScript in a library.</Description>
+    <PackageTags>Code Fix;CodeFixProvider;Obsolete</PackageTags>
+    <RepositoryUrl>https://github.com/sarahelsaig/ObsoleteScript</RepositoryUrl>
+    <PackageProjectUrl>https://github.com/sarahelsaig/ObsoleteScript/tree/main/DerelictCore.ObsoleteScript.Abstractions</PackageProjectUrl>
+    <PackageLicenseFile>License.md</PackageLicenseFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="..\LICENSE" Link="License.md" />
+    <None Include="Readme.md" />
+  </ItemGroup>
+
   <ItemGroup>
     <PackageReference Include="Lombiq.Analyzers" Version="7.0.1-alpha.2.osoe-1333">
       <PrivateAssets>all</PrivateAssets>
